@@ -1,5 +1,5 @@
-STM32F0Discovery: Programming from Scratch
-Isaac Wilkie
+# STM32F0Discovery: Programming from Scratch
+### Isaac Wilkie
 
 The overal goal of this project is to familiaize myself with a microtontrollers internal functioning by writing a simple LED Blinky program with minimal software abstractions.
 
@@ -14,7 +14,7 @@ Exceptions:
 - code may be written in Assembly language; however, the final binaries will undergo thorough analysis
 - Microcontroller programming will utilize a programmer, the St-link V2. This aspect may be pursued as a future project.
 
-Overview of Open Source Tools Used: 
+#### Overview of Open Source Tools Used: 
 - GNU arm-none-eabi-binutils                https://archlinux.org/packages/extra/x86_64/arm-none-eabi-binutils/
 - stlink open-source package                https://github.com/stlink-org/stlink?tab=readme-ov-file
 - hex2bin                                   https://github.com/algodesigner/hex2bin
@@ -26,11 +26,11 @@ Overview of Open Source Tools Used:
     * GNU as                                --> GNU assembler user guide
     * GNU ld                                --> GNU linker user guide
 
-Picking a Microcontroller
+#### Picking a Microcontroller
 
 I have some experience in 8-bit microcontrollers including Atmel ATTiny85 and various small PIC's. Therefore, I will pick a larger and more widly used ARM 32-bit architecture. My final pick was a STM32F0Discovery development board. This board contains a STM32F051 microcontroller which itself contains a Cortex-M0+ Core. I picked a development board to minimize hardware design to focus on software. I picked this particular unit because it was inexpensive and well documented. 
 
-Development Environment Tools
+#### Development Environment Tools
 
 The next step of any project is picking the tools that will be used.
 GNU is the obvious choice, it is a very large open source linux based project with lots of history and support. It also contains MAKE, which can be used for easy binary creation.
