@@ -58,11 +58,34 @@ The binary file was automatically copied to /usr/bin by the makefile so it will 
 #### Starting Test Code
 
 Now is the time to start writing code for the microcontroller (MCU). The absolute minimum code needed for the MCU is a RESET vector. Upon powering on or hard reset, the MCU hardware pulls data from the reset vector location in memory and loads it into the Program Counter (PC). The PC is now pointing at the first instruction it will execute. <br>
-Other features I would like to test are: section linking to different sections of the memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. 
+Other features I would like to test are: section linking to different areas of the address memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. <br>
+Below is the contents of the file Blinky.asm
 ```
+  .thumb
 
+  .section .text.program
+_start:
+  mov   R0, #9
+  B     _start
+
+  .section .data
+  .word 0x41424344
+
+  .section .text.vector
+  .word     _start + 1
 ```
-According to PM0215 section 2.13, "On reset, the processor loads the PC with the value of the reset vector,
-which is at address 0x00000004. Bit[0] of the value is loaded into the EPSR T-bit at reset and must be 1".   
+Notes on the GNU as assembler syntax and struction: 
+- the '.' character indicates an assembler directive
+- .section indicates a named section which will be combined by the linker
+- there are at least 3 sections: .text, .data, and .bss as describted in the GNU as documentation section 4.1
+#### Explaining the code
+###### .thumb  
+The assembler needs to know what it is assembling. PM0215 section 1.4 states, "The Cortex®-M0 processor implements the Arm®v6-M architecture, which is based on the 16-bit Thumb® instruction set and includes Thumb-2 technology". This means that the assembler needs to use 16-bit thumb encoding, characterized by the .thumb directive.
+###### _start:
+The GNU as, like all assemblers, uses labels to easily keep track of relative addresses. _start represents the absolute address of the next instruction in memory. This address is actually not given until the linker places all the object files and sections together, in which case it can be found and implimented. I amed it _start for clarity. It is the start of my program.
+###### .word
+I inputted an additional section to test and analyze the placement of data. The .word directive places whatever is next to it directly into memory at that location, which will be determined by the section location denoted by the linker. 0x41424344 will translate to ABCD in ascii.
+###### .section .text.vector
+A section created to be placed at the location of the reset vector by the linker. inputting a word pointing to the _start label will load the PC upon reset with the address of _start, executing the correct instructions. However, according to PM0215 section 2.13, "On reset, the processor loads the PC with the value of the reset vector, which is at address 0x00000004. Bit[0] of the value is loaded into the EPSR T-bit at reset and must be 1". This means the least significant bit (LSB) needs to be 1 no matter what the address of _start. I implimented this by having the assembler add 1 to the _start address.   
 
 
