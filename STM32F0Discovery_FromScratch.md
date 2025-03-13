@@ -55,7 +55,14 @@ rm -rf hex2bin
 ```
 The binary file was automatically copied to /usr/bin by the makefile so it will be seen by the system $PATH. The build files can be deleted. 
 
+#### Starting Test Code
 
+Now is the time to start writing code for the microcontroller (MCU). The absolute minimum code needed for the MCU is a RESET vector. Upon powering on or hard reset, the MCU hardware pulls data from the reset vector location in memory and loads it into the Program Counter (PC). The PC is now pointing at the first instruction it will execute. <br>
+Other features I would like to test are: section linking to different sections of the memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. 
+```
 
+```
+According to PM0215 section 2.13, "On reset, the processor loads the PC with the value of the reset vector,
+which is at address 0x00000004. Bit[0] of the value is loaded into the EPSR T-bit at reset and must be 1".   
 
 
