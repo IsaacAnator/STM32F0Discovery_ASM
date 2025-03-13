@@ -39,9 +39,9 @@ GNU binutils need to be configured to be a cross compiler for ARM Cortex-M0+. Wi
 ```
 sudo pacman -S arm-none-eabi-binutils
 ```
-"arm" specifies the CPU
-"none" means no specific company/vender
-"eabi" specified as Embedded Application Binary Interface (as opposed to an OS)
+"arm" specifies the CPU <br>
+"none" means no specific company/vender <br>
+"eabi" specified as Embedded Application Binary Interface (as opposed to an OS) <br>
 
 I want a final binary file. The GNU assembler and linker will only create an elf or hex file. binutils contains a tool 'objcopy' which can convert from an elf to bin file. However, within the objcopy documentation it states, "When objcopy generates a raw binary file, it will essentially produce a memory dump of the contents of the input object file. All symbols and relocation information will be discarded." This will not be satisfactory to my application, as I need to place sections of code in specific address locations using the linker, and those addresses cannot be discarded. 
 
