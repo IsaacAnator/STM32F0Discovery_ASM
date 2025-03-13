@@ -36,7 +36,7 @@ The next step of any project is picking the tools that will be used.
 GNU is the obvious choice, it is a very large open source linux based project with lots of history and support. It also contains MAKE, which can be used for easy binary creation.
 GNU's binutils contain a supported assembler, linker, and various other helpful tools.
 GNU binutils need to be configured to be a cross compiler for ARM Cortex-M0+. Within the installation documentation, in the section "Host, Build, and Target Specification", it details the naming convention for cross compiler targets: _cpu-company-system._ luckily for me, someone else has compiled ARM binutils for me, so installation onto an ArchLinux distribution is trivial: 
-```bash
+```
 sudo pacman -S arm-none-eabi-binutils
 ```
 "arm" specifies the CPU
@@ -46,7 +46,7 @@ sudo pacman -S arm-none-eabi-binutils
 I want a final binary file. The GNU assembler and linker will only create an elf or hex file. binutils contains a tool 'objcopy' which can convert from an elf to bin file. However, within the objcopy documentation it states, "When objcopy generates a raw binary file, it will essentially produce a memory dump of the contents of the input object file. All symbols and relocation information will be discarded." This will not be satisfactory to my application, as I need to place sections of code in specific address locations using the linker, and those addresses cannot be discarded. 
 
 Therefore, I used another open source tool called hex2bin. This tool will keep the specfic address locations generated on the hex file by the linker. Installing was done by building from github: 
-```bash
+```
 git clone https://github.com/algodesigner/hex2bin
 cd hex2bin
 make
