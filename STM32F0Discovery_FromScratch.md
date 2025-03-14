@@ -109,4 +109,32 @@ The memory command can be used to describe the type of memory and its size and l
 The sections command initializes which input sections will be assigned to which memory blocks. For debugging, the linker also provides output sections that can be viewed in the final elf file. Section 3.3 in the documentation goes over the specific linker syntax. <br>
 The memory locations were chosen specifically. Looking at the memory map from RM0091 section 2.2, The vector memory section is placed at the start of the vector table, which is at address location 0x4. The initial stack pointer value is initialized at address 0x0, but for now I will skip it as I will not use the stack for this demonstration. The data memory section can be placed after the vector table, which is at address 0xC0. Finally, section 2.5 says that the boot configuration initialized from the factory in the Option Bytes will boot from the main memory, which starts at location 0x08000000. Thus, that is where any program code will go. 
 ##### Makefile
+```
+all: Blinky.asm Blinky.ld
+	arm-none-eabi-as -o Blinky.o Blinky.asm
+	arm-none-eabi-ld -T Blinky.ld -o Blinky.elf Blinky.o
+	arm-none-eabi-objcopy -O ihex Blinky.elf Blinky.hex
+	hex2bin -s 0 -p 0 Blinky.hex
+
+
+bin: Blinky.bin
+	hexdump -C Blinky.bin
+
+elf: Blinky.elf
+	arm-none-eabi-objdump -f .text -s Blinky.elf
+
+strip: 
+	rm -f *.o
+	rm -f *.elf
+	rm -f *.hex
+
+clean: 
+	rm -f *.o
+	rm -f *.elf
+	rm -f *.bin
+	rm -f *.hex
+```
+just runnning "make" in the terminal creates a binary file ready to flash to the STM32. Using binutils, it first creates an object file, then links the object files together and places them in the correct place using my custom linker file. I use objcopy to create an intel ihex file, which can be flashed directly to the MCU. However, for debugging and education purposes, I also use hex2bin to create a final binary that can be hexdumped and looked at easier. I did not use objcopy for this as explained earlier in this report. <br>
+I use the "bin" and "elf" section headers to make viewing either the bin file or elf file easier for debugging. "strip" leaves the bin file in case I want to flash, "clean" deletes everything created. 
+#### Debugging
 
