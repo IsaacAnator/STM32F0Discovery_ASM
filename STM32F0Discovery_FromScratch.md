@@ -58,8 +58,8 @@ The binary file was automatically copied to /usr/bin by the makefile so it will 
 #### Starting Test Code
 
 Now is the time to start writing code for the microcontroller (MCU). The absolute minimum code needed for the MCU is a RESET vector. Upon powering on or hard reset, the MCU hardware pulls data from the reset vector location in memory and loads it into the Program Counter (PC). The PC is now pointing at the first instruction it will execute. <br>
-Other features I would like to test are: section linking to different areas of the address memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. <br>
-Below is the contents of the file Blinky.asm
+Other features I would like to test are: section linking to different areas of the address memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. 
+##### Assembly Code in Blinky.asm
 ```
   .thumb
 
@@ -78,7 +78,6 @@ Notes on the GNU as assembler syntax and struction:
 - the '.' character indicates an assembler directive
 - .section indicates a named section which will be combined by the linker
 - there are at least 3 sections: .text, .data, and .bss as describted in the GNU as documentation section 4.1
-#### Explaining the code
 ###### .thumb  
 The assembler needs to know what it is assembling. PM0215 section 1.4 states, "The Cortex®-M0 processor implements the Arm®v6-M architecture, which is based on the 16-bit Thumb® instruction set and includes Thumb-2 technology". This means that the assembler needs to use 16-bit thumb encoding, characterized by the .thumb directive.
 ###### _start:
@@ -88,4 +87,26 @@ I inputted an additional section to test and analyze the placement of data. The 
 ###### .section .text.vector
 A section created to be placed at the location of the reset vector by the linker. inputting a word pointing to the _start label will load the PC upon reset with the address of _start, executing the correct instructions. However, according to PM0215 section 2.13, "On reset, the processor loads the PC with the value of the reset vector, which is at address 0x00000004. Bit[0] of the value is loaded into the EPSR T-bit at reset and must be 1". This means the least significant bit (LSB) needs to be 1 no matter what the address of _start. I implimented this by having the assembler add 1 to the _start address.   
 
+##### Linker Code from Blinky.ld
+```
+MEMORY
+{
+    vector  (rx)  : org = 0x04,         len = 192
+    data    (r)   : org = 0xC0,         len = 65343
+    program (rx)  : org = 0x08000000,   len = 65535
+}
+
+SECTIONS
+{
+    data    :   {*(.data)}          > data
+    program :   {*(.text.program)}  > program
+    RESET   :   {*(.text.vector)}   > vector
+}
+```
+###### MEMORY
+The memory command can be used to describe the type of memory and its size and location within the memory space. I have initialized three blocks of memory named "vector", "data", and "program". Inside the parenthesis lists the memory attributes. r - can be read, x - executable code. the org is shorthand for origin, which gives the address of the start of the memory block. len is the length of the memory block. This information can be found in the linker documentation section 3.7. 
+###### SECTIONS
+The sections command initializes which input sections will be assigned to which memory blocks. For debugging, the linker also provides output sections that can be viewed in the final elf file. Section 3.3 in the documentation goes over the specific linker syntax. <br>
+The memory locations were chosen specifically. Looking at the memory map from RM0091 section 2.2, The vector memory section is placed at the start of the vector table, which is at address location 0x4. The initial stack pointer value is initialized at address 0x0, but for now I will skip it as I will not use the stack for this demonstration. The data memory section can be placed after the vector table, which is at address 0xC0. Finally, section 2.5 says that the boot configuration initialized from the factory in the Option Bytes will boot from the main memory, which starts at location 0x08000000. Thus, that is where any program code will go. 
+##### Makefile
 
