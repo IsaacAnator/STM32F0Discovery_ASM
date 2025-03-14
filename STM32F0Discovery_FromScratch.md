@@ -58,7 +58,7 @@ The binary file was automatically copied to /usr/bin by the makefile so it will 
 #### Starting Test Code
 
 Now is the time to start writing code for the microcontroller (MCU). The absolute minimum code needed for the MCU is a RESET vector. Upon powering on or hard reset, the MCU hardware pulls data from the reset vector location in memory and loads it into the Program Counter (PC). The PC is now pointing at the first instruction it will execute. <br>
-Other features I would like to test are: section linking to different areas of the address memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. 
+Before making an LED blink, I want to test the development environment to ensure a smoother coding and debugging experience later. This code will test: Section linking to different areas of the address memory space, basic assembler syntax, and proper assembling of instructions into the correct machine code. 
 ##### Assembly Code in Blinky.asm
 ```
   .thumb
