@@ -137,4 +137,18 @@ clean:
 just runnning "make" in the terminal creates a binary file ready to flash to the STM32. Using binutils, it first creates an object file, then links the object files together and places them in the correct place using my custom linker file. I use objcopy to create an intel ihex file, which can be flashed directly to the MCU. However, for debugging and education purposes, I also use hex2bin to create a final binary that can be hexdumped and looked at easier. I did not use objcopy for this as explained earlier in this report. Using hex2bin, the -s flag gives the starting address and the -p flag gives the padding character. <br>
 I use the "bin" and "elf" section headers to make viewing either the bin file or elf file easier for debugging. "strip" leaves the bin file in case I want to flash, "clean" deletes everything created. 
 #### Debugging
-
+```
+make
+make bin
+hexdump -C Blinky.bin
+00000000  00 00 00 00 01 00 00 08  00 00 00 00 00 00 00 00  |................|
+00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000000c0  44 43 42 41 00 00 00 00  00 00 00 00 00 00 00 00  |DCBA............|
+000000d0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+08000000  09 20 fd e7                                       |. ..|
+08000004
+```
+Using hexdump from binutils, I can check the tools to ensure the proper binary output. I expect the there to be a reset vector pointing to the first instruction which will be located in the flash at memory location 0x08000000. I also expect there to be 4 words of data at location 0x000000C0 reading "ABCD". looking at the binary output above, this is exactly what I see, with the data being stored in little endian format as described in RM0091 2.2.1 <br>
+Now checking the machine code on the instructions themselves. In the ARMv6-M architecture reference manual section A6.7.39 it gives the encoding for the "MOV immediate" instruction. The first 8 bits are the immediate value, the next 3 give which of the first 8 internal registers, and the last 5 should be 0b00100. Putting it all together the 16 bit instruction should be 0x2009 in hex.  
