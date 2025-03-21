@@ -136,7 +136,7 @@ clean:
 ```
 just runnning "make" in the terminal creates a binary file ready to flash to the STM32. Using binutils, it first creates an object file, then links the object files together and places them in the correct place using my custom linker file. I use objcopy to create an intel ihex file, which can be flashed directly to the MCU. However, for debugging and education purposes, I also use hex2bin to create a final binary that can be hexdumped and looked at easier. I did not use objcopy for this as explained earlier in this report. Using hex2bin, the -s flag gives the starting address and the -p flag gives the padding character. <br>
 I use the "bin" and "elf" section headers to make viewing either the bin file or elf file easier for debugging. "strip" leaves the bin file in case I want to flash, "clean" deletes everything created. 
-#### Debugging
+#### Debugging The Binary Output
 ```
 make
 make bin
@@ -150,5 +150,8 @@ hexdump -C Blinky.bin
 08000000  09 20 fd e7                                       |. ..|
 08000004
 ```
-Using hexdump from binutils, I can check the tools to ensure the proper binary output. I expect the there to be a reset vector pointing to the first instruction which will be located in the flash at memory location 0x08000000. I also expect there to be 4 words of data at location 0x000000C0 reading "ABCD". looking at the binary output above, this is exactly what I see, with the data being stored in little endian format as described in RM0091 2.2.1 <br>
-Now checking the machine code on the instructions themselves. In the ARMv6-M architecture reference manual section A6.7.39 it gives the encoding for the "MOV immediate" instruction. The first 8 bits are the immediate value, the next 3 give which of the first 8 internal registers, and the last 5 should be 0b00100. Putting it all together the 16 bit instruction should be 0x2009 in hex.  
+Using hexdump from binutils, I can check the tools to ensure the proper binary output. I expect the there to be a reset vector pointing to the first instruction which will be located in the flash at memory location 0x08000000. I also expect there to be 4 words of data at location 0x000000C0 reading "ABCD". looking at the binary output above, this is exactly what I see, with the data being stored in little endian format as described in RM0091 2.2.1 
+
+Now checking the machine code on the instructions themselves. In the ARMv6-M architecture reference manual section A6.7.x it gives the encoding for the "MOV immediate" and "Branch to label" instructions. The MOV instruction is encoded as 0b00100xxxyyyyyyyy where y is the immediate number #imm8, and x encodes the internal register from R0-R7. Putting it all together the 16 bit instruction should be 0x2009 in hex. The next instruction is a Branch instruction which is encoded as 0b11100xxxxxxxxxxx, where x is the offset added to the Program Counter (PC). The immediate number is prepended with a 0 and then sign extended out to a 32 bit integer so that it can be added to the PC. According to section A5.1.2, "Read the PC value, that is, the address of the current instruction + 4. Some instructions read the PC value implicitly, without the use of a register specifier, for example the conditional branch instruction." This means that the PC will read a value 4 bytes ahead of the current instruction due to instruction pipelining, so the branch instruction will have to subtract the actual offset in bytes +4. The MOV instruction is 16 bits or 2 bytes (like most .thumb instructions for the ARM Cortex-M0+) so the offset to jump back to _start which is located at 0x08000000 is 2 + 4 = 6 bytes back (-6 in decimal). Working backwards now, removing the leading 0 from and shortening to 11 bits and putting the whole instruction together I get 0xe7fd.
+
+
