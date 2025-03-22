@@ -1,5 +1,5 @@
-all: Blinky.asm Blinky.ld
-	arm-none-eabi-as -o Blinky.o Blinky.asm
+all: Blinky.s Blinky.ld
+	arm-none-eabi-as -o Blinky.o Blinky.s
 	arm-none-eabi-ld -T Blinky.ld -o Blinky.elf Blinky.o
 	arm-none-eabi-objcopy -O ihex Blinky.elf Blinky.hex
 	hex2bin -s 0 -p 0 Blinky.hex

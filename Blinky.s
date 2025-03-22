@@ -2,8 +2,11 @@
 
   .section .text.program
 _start:
-  mov   R0, #9
-  B     _start
+init:
+
+
+main:
+    B   main 
 
   .section .data
   .word 0x41424344
