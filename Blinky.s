@@ -3,7 +3,7 @@
   .section .text.program      @ this is a test comment
 _start:
 init:
-  @; enable AHB clock (Read-Modifty-Write)
+  @ enable AHB clock (Read-Modifty-Write)
   LDR R0, RCC                 @ Store the memory address in R0
   LDR R2, [R0, #AHBENR]       @ Store Data pointed to by R0 to R2
   MOV R1, #1
@@ -26,4 +26,4 @@ RCC:
   .section .text.vector
   .word     _start + 1
 
-
+/* vim: set filetype=arm : */
