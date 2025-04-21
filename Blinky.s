@@ -6,7 +6,7 @@ init:
                                          @ enable AHB clock (Read-Modifty-Write)
   ldr r0, RCC                            @ Store the memory address in R0
   ldr r1, [r0, #AHBENR]                  @ (READ) Store Data pointed to by R0 to R1
-  mov r7, #1
+  mov r7, #0b1
   lsl r7, r7, #IOPCEN                    @ logical shift left: Make a bitmask in R7
   orr r1, r7, r1                         @ (MODIFY)
   str r1, [r0, #AHBENR]                  @ (WRITE)
@@ -22,28 +22,28 @@ init:
                                          @ Set port output type
   ldr r1, [r0, #OTYPER]                  @ (READ) Store Data pointed to by R0 to R1 
   mov r7, #0b00                          @ set as Push-Pull
-  lsl r7, r7, #BIT8                      @ logical shift left: Make a bitmask in R7
+  lsl r7, r7, #8                      @ logical shift left: Make a bitmask in R7
   orr r1, r7, r1                         @ (MODFIY)
   str r1, [r0, #OTYPER]                  @ (WRITE)
 
                                          @ Set port speed
   ldr r1, [r0, #OSPEEDR]                 @ (READ) Store Data pointed to by R0 to R1 
   mov r7, #0b00                          @ set as low speed
-  lsl r7, r7, #BIT16                     @ logical shift left: Make a bitmask in R7
+  lsl r7, r7, #16                     @ logical shift left: Make a bitmask in R7
   orr r1, r7, r1                         @ (MODFIY)
   str r1, [r0, #OSPEEDR]                 @ (WRITE)
 
                                          @ Set pullup/pulldown register
   ldr r1, [r0, #PUPDR]                   @ (READ) Store Data pointed to by R0 to R1 
   mov r7, #0b00                          @ set as low speed
-  lsl r7, r7, #BIT16                     @ logical shift left: Make a bitmask in R7
+  lsl r7, r7, #16                     @ logical shift left: Make a bitmask in R7
   orr r1, r7, r1                         @ (MODFIY)
   str r1, [r0, #PUPDR]                   @ (WRITE)
 
                                          @ Set initial LED value
   ldr r1, [r0, #BSRR]                    @ (READ) Store Data pointed to by R0 to R1 
   mov r7, #0b1                           @ set initial value to HIGH
-  lsl r7, r7, #BIT8                      @ logical shift left: Make a bitmask in R7
+  lsl r7, r7, #8                      @ logical shift left: Make a bitmask in R7
   orr r1, r7, r1                         @ (MODFIY)
   str r1, [r0, #BSRR]                    @ (WRITE)
 

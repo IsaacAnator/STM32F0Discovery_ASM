@@ -38,7 +38,7 @@
 .equ RCC_Adr,         0x40021000
 .equ AHBENR,          0x14  
 
-.equ IOPCEN,          BIT19
+.equ IOPCEN,          19
 
 @; GPIO Port C
 .equ GPIOC_Adr,       0x48000800
@@ -48,7 +48,7 @@
 .equ PUPDR,           0x0C
 .equ BSRR,            0x18
 
-.equ OUTPUT,					BIT16
+.equ OUTPUT,					16
 
 .equ GPIOC_BSP9,      BIT8
 .equ GPIOC_BRP9,      BIT24
