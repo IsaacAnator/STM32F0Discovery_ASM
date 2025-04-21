@@ -41,13 +41,16 @@
 .equ IOPCEN,          BIT19
 
 @; GPIO Port C
-.equ GPIOC_adr,       0x48000800
+.equ GPIOC_Adr,       0x48000800
 .equ MODER,           0x00
 .equ OTYPER,          0x04
 .equ OSPEEDR,         0x08
 .equ PUPDR,           0x0C
 .equ BSRR,            0x18
 
+.equ OUTPUT,					BIT16
+
 .equ GPIOC_BSP9,      BIT8
 .equ GPIOC_BRP9,      BIT24
+
 
